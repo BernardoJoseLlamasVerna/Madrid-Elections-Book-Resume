@@ -1065,7 +1065,7 @@ print('VOX_difference: '+ difference_elections('vox', df_2021, df_2019)[0] +' / 
 
 # Vemos claramente cómo el PP es el partido que más crece en número de votos (+910,607 votos / 22.33%), frente a Cs que es el que más disminuye su apoyo electoral (-501,023 votos / -15.84%) pasando de 631,117 votos (19.39%) a 130,094 votos (3.55%), lo que implica no llegar al 5% mínimo para obtener representación parlamentaria. Otro partido que pierde apoyos es el PSOE (-272,236 votos / -10.49%).
 # 
-# El resto de partidos aumenta sus apoyos: Más Madrid pasa de 474,725 votos (14.59%) a 618,285 votos (16.85%), lo que supone un incremento de 142,439 votos (2.27%), consiguiendo dar el sorpaso al PSOE dentro del bloque de la izquierda; le sigue Podemos-IU de 181,242 votos (5.57%) a 262,45 votos (7.15%), lo que supone un crecimiento en 81,208 votos (1.59%). Por último, Vox es el partido de los que obtiene representación que menos crece: 288,313 votos (8.86%) en 2019 a 333,447 votos (9.09%) en 2021.
+# El resto de partidos aumenta sus apoyos: Más Madrid pasa de 474,725 votos (14.59%) a 618,285 votos (16.85%), lo que supone un incremento de 142,439 votos (2.27%), consiguiendo dar el sorpaso al PSOE dentro del bloque de la izquierda; le sigue Podemos-IU de 181,242 votos (5.57%) a 262,45 votos (7.15%), lo que supone un crecimiento en 81,208 votos (1.59%). Por último, Vox es el partido de los que obtiene representación que menos crece: 288,313 votos (8.86%) en 2019 a 333,447 votos (9.09%) en 2021, lo que supone un aumento de 44,824 votos (0.24%).
 
 # ### 2.2.-Análisis de la distribución del voto
 
