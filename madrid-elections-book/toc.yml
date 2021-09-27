@@ -1,0 +1,16 @@
+# add the top header 
+- header: Madrid Elections Book
+
+# add the 'about.md' section at the top 
+- url: /
+  not_numbered: true
+
+# add a divider: a divider is just a black line separating sections. It is just aesthetics.
+- divider: true
+
+# add a second header
+- header: Contents
+
+# add the first notebook
+- url: /Madrid_Elections_2021_Resume
+  not_numbered: true
