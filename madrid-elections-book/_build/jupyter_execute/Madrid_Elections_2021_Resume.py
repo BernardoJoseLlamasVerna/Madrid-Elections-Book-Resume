@@ -888,10 +888,10 @@ df_2021.info()
 # 
 # Precisamente en Murcia, debido a los rumores de negociaciones entre PSOE y Cs para retirar el apoyo al PP, llevaron a Isabel Díaz Ayuso a anticiparse y convocar elecciones para no perder el gobierno autonómico sabiendo que las encuestas le eran favorables por dos aspectos: 
 # 
-# * 1) la estrategia de oposición al Gobierno nacional por la gestión de la COVID-19 y canalizar el malestar que generó en muchos sectores el confinamiento. 
+# * La estrategia de oposición al Gobierno nacional por la gestión de la COVID-19 y canalizar el malestar que generó en muchos sectores el confinamiento. 
 # 
 # 
-# * 2) las encuestas que indicaban una total caída del apoyo electoral a Cs, su socio de gobierno.
+# * Las encuestas que indicaban una total caída del apoyo electoral a Cs, su socio de gobierno.
 # 
 # Vamos a pasar a analizar los resultados y a comentarlos.
 
@@ -1979,7 +1979,7 @@ df_abstenciones.nsmallest(15, ['dif_abstencion_porcentaje'])
 # 
 # * En cuanto a la participación, las elecciones de 2021 han desmitificado que una participación alta sea sinónimo de un mayor apoyo hacia la izquierda vistos los resultados. Se podría decir que esta mayor movilización se ha debido a los liderazgos principales de Isabel Díaz Ayuso y Pablo Iglesias Turrión, que han movilizado el voto a uno y otro lado.
 
-# In[124]:
+# In[123]:
 
 
 get_ipython().system('pip list')
