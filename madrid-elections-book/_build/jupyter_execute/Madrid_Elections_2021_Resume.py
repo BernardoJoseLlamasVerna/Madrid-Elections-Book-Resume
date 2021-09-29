@@ -273,6 +273,8 @@ def table_partido(link):
 
 # Aplicamos sobre la url inicial desde la que accederemos a todos los municipios:
 
+# Vamos a chequear qué longitud tiene nuestra lista:
+
 # In[15]:
 
 
@@ -280,6 +282,7 @@ url = 'https://resultados.elpais.com/elecciones/2019/autonomicas/12/'
 results_pruebas = []
 for li in lis:
     for link in li.find_all('a'):
+        # print(link)
         local_result = {}
         local_result['municipio'] = link.text
         local_result['link'] = url+link.get('href')
@@ -290,9 +293,13 @@ for li in lis:
 results_pruebas[0]
 
 
-# Vamos a chequear qué longitud tiene nuestra lista:
-
 # In[16]:
+
+
+# results_pruebas
+
+
+# In[17]:
 
 
 len(results_pruebas)
@@ -304,7 +311,7 @@ len(results_pruebas)
 # 
 # Buscando de forma manual llegamos que la información electoral de La Acebeda para el año 2019 está resumida en este enlace: https://resultados.elpais.com/elecciones/2019/autonomicas/12/28/01.html
 
-# In[17]:
+# In[18]:
 
 
 # insertamos la info. asociada a La Acebeda:
@@ -320,7 +327,7 @@ results_pruebas[0]
 
 # Pasamos a presentar la información de una forma que nos sea más fácil de tratar como dataframe:
 
-# In[18]:
+# In[19]:
 
 
 results_pruebas_formatted = []
@@ -341,7 +348,7 @@ results_pruebas_formatted[0]
 
 # Vamos a crear un dataframe donde se muestre la información de cada municipio y el resumen de partidos a los que se ha votado en cada uno.
 
-# In[19]:
+# In[20]:
 
 
 import pandas as pd
@@ -356,7 +363,7 @@ df = pd.merge(df_partidos, df_escrutinio, on='municipio', how='outer')
 df
 
 
-# In[20]:
+# In[21]:
 
 
 # cambiamos la posición de las columnas para una mejor presentación:
@@ -367,7 +374,7 @@ df.insert(1, 'link', second_column)
 df
 
 
-# In[21]:
+# In[22]:
 
 
 df.count()
@@ -379,7 +386,7 @@ df.count()
 # 
 # Nos va a servir para poder realizar mapas de la distribución del voto en cada municipio.
 
-# In[22]:
+# In[23]:
 
 
 import geopandas as gpd
@@ -392,7 +399,7 @@ map_municipios = map_municipios.sort_values('municipio')
 map_municipios.head()
 
 
-# In[23]:
+# In[24]:
 
 
 map_municipios.info()
@@ -400,7 +407,7 @@ map_municipios.info()
 
 # Como podemos ver, el geodataframe map_municipios tiene como máximo 182 registros. A la hora de poder cruzar la información con nuestros dataframes, vemos que la columna 'municipio' tiene 182 registros, lo que significa que hay 3 elementos de más sabiendo que la Comunidad de Madrid tiene 179 municipios. Tenemos que investigar si hay elementos repetitivos y cuáles son. Una vez limpio, solo nos interesan las columnas 'municipio' y 'geometry':
 
-# In[24]:
+# In[25]:
 
 
 map_municipios = map_municipios[['municipio', 'geometry']]
@@ -409,7 +416,7 @@ map_municipios
 
 # Vemos que hay municipios cuyo nombre al tener acentos o caracteres especiales no aparece correctamente y no va a coincidir con la información de nuestro dataframe. Para obtenerlos, hacemos: 
 
-# In[25]:
+# In[26]:
 
 
 no_intersection_map = set(map_municipios['municipio']).difference(set(df['municipio']))
@@ -419,7 +426,7 @@ no_intersection_map
 
 # Por lo tanto, procedemos a corregir los nombres:
 
-# In[26]:
+# In[27]:
 
 
 map_municipios['municipio'] = map_municipios['municipio'].replace([
@@ -506,7 +513,7 @@ map_municipios.head()
 
 # Vemos si hay valores repetidos:
 
-# In[27]:
+# In[28]:
 
 
 # sacamos los nombres de los municipios y los metemos en una lista:
@@ -517,7 +524,7 @@ set([x for x in municipios if municipios.count(x) > 1])
 
 # Vemos si los valores de 'geometry' de 'Arroyomolinos' son los mismos y por lo tanto se pueden eliminar sin problema:
 
-# In[28]:
+# In[29]:
 
 
 map_municipios[map_municipios['municipio'] == 'Arroyomolinos']
@@ -525,7 +532,7 @@ map_municipios[map_municipios['municipio'] == 'Arroyomolinos']
 
 # Son los mismos, se puede eliminar un registro:
 
-# In[29]:
+# In[30]:
 
 
 # nos quedamos solo con un valor de Arroyomolinos (keep = 'first'):
@@ -535,7 +542,7 @@ map_municipios[map_municipios['municipio'] == 'Arroyomolinos']
 
 # Vemos si pueden haber diferencias entre los nombres de los municipios:
 
-# In[30]:
+# In[31]:
 
 
 no_intersection_map = set(map_municipios['municipio']).difference(set(df['municipio']))
@@ -551,19 +558,19 @@ no_intersection_map
 
 # Antes de corregir los nombres, comprobamos si ya existen en map_municipios:
 
-# In[31]:
+# In[32]:
 
 
 map_municipios[map_municipios['municipio'] == 'Horcajo de la Sierra-Aoslos']
 
 
-# In[32]:
+# In[33]:
 
 
 map_municipios[map_municipios['municipio'] == 'Manzanares el Real']
 
 
-# In[33]:
+# In[34]:
 
 
 map_municipios[map_municipios['municipio'] == 'Navacerrada']
@@ -573,7 +580,7 @@ map_municipios[map_municipios['municipio'] == 'Navacerrada']
 # 
 # Tenemos que ver si los otros dos pares de nombres de municipios tienen los mismos valores de 'geometry':
 
-# In[34]:
+# In[35]:
 
 
 geometry_1 = map_municipios[map_municipios['municipio'] == 'Manzanares el Real']['geometry']
@@ -583,7 +590,7 @@ print(geometry_1)
 print(geometry_2)
 
 
-# In[35]:
+# In[36]:
 
 
 geometry_3 = map_municipios[map_municipios['municipio'] == 'Navacerrada']['geometry']
@@ -595,7 +602,7 @@ print(geometry_4)
 
 # No tienen el mismo valor de 'geometry', por lo tanto solo vamos a corregir 'Horcajo de la Sierra' y los otros dos desaparecerán a la hora de mergear con nuestro dataframe:
 
-# In[36]:
+# In[37]:
 
 
 map_municipios['municipio'] = map_municipios['municipio'].replace({
@@ -609,7 +616,7 @@ no_intersection_map
 
 # Ya podemos mergear para que nuestro dataframe tenga información geoespacial:
 
-# In[37]:
+# In[38]:
 
 
 df_2019 = pd.merge(df, map_municipios, how='left', on='municipio')
@@ -618,7 +625,7 @@ df_2019.info()
 
 # Pasamos las columnas a valores numéricos, excepto 'municipio', 'link' y 'geometry':
 
-# In[38]:
+# In[39]:
 
 
 cols = df_2019.columns.drop(['municipio', 'link', 'geometry'])
@@ -630,7 +637,7 @@ df_2019.info()
 # ### 1.1.-Resumen del procedimiento:
 # Todo el proceso hasta obtener una primera versión del dataframe se puede resumir en las siguientes funciones:
 
-# In[39]:
+# In[40]:
 
 
 def table_escrutado(link):
@@ -655,7 +662,7 @@ def table_escrutado(link):
     return results_table_escrutado
 
 
-# In[40]:
+# In[41]:
 
 
 def table_partido(link):
@@ -680,7 +687,7 @@ def table_partido(link):
     return results_table_partido
 
 
-# In[41]:
+# In[42]:
 
 
 def clean_strings_and_turn_float(value):
@@ -713,7 +720,7 @@ def result_resume(results_table_escrutado):
     return results_resume
 
 
-# In[42]:
+# In[43]:
 
 
 def strip_accents(text):
@@ -728,7 +735,7 @@ def strip_accents(text):
     return str(text)
 
 
-# In[43]:
+# In[44]:
 
 
 def result_partido_resume(results_table_partido):
@@ -747,7 +754,7 @@ def result_partido_resume(results_table_partido):
     return results_resume_partido
 
 
-# In[44]:
+# In[45]:
 
 
 def prepare_data_from_web(url, lis):
@@ -765,7 +772,7 @@ def prepare_data_from_web(url, lis):
     return data_from_web
 
 
-# In[45]:
+# In[46]:
 
 
 def format_data(data_from_web):
@@ -782,7 +789,7 @@ def format_data(data_from_web):
     return data_formatted
 
 
-# In[46]:
+# In[47]:
 
 
 def data_frame_preparation(data_formatted):
@@ -804,7 +811,7 @@ def data_frame_preparation(data_formatted):
     return df
 
 
-# In[47]:
+# In[48]:
 
 
 def extract_data_from_web(url):
@@ -829,7 +836,7 @@ def extract_data_from_web(url):
 # 
 # Aplicamos la función que resumen el procedimiento:
 
-# In[48]:
+# In[49]:
 
 
 url = 'https://resultados.elpais.com/elecciones/2021/autonomicas/12/'
@@ -838,7 +845,7 @@ df_2021 = extract_data_from_web(url)
 df_2021
 
 
-# In[49]:
+# In[50]:
 
 
 len(df_2021)
@@ -850,7 +857,7 @@ len(df_2021)
 
 # Vemos si pueden haber diferencias entre los nombres de los municipios:
 
-# In[50]:
+# In[51]:
 
 
 no_intersection_map = set(map_municipios['municipio']).difference(set(df_2021['municipio']))
@@ -860,7 +867,7 @@ no_intersection_map
 
 # Son los mismos que antes, procedemos a mergear los dataframes:
 
-# In[51]:
+# In[52]:
 
 
 import pandas as pd
@@ -868,7 +875,7 @@ df_2021 = pd.merge(df_2021, map_municipios, how='left', on='municipio')
 df_2021.info()
 
 
-# In[52]:
+# In[53]:
 
 
 # pasamos a valores numéricos todas las columnas excepto 'municipio', 'link' y 'geometry':
@@ -876,6 +883,14 @@ cols = df_2021.columns.drop(['municipio', 'link', 'geometry'])
 
 df_2021[cols] = df_2021[cols].apply(pd.to_numeric, errors='coerce', axis=1)
 df_2021.info()
+
+
+# In[54]:
+
+
+# convertimos a csv por si acaso cambia la web de donde sacamos los resultados
+# datos_electorales_2019 = df_2019.to_csv('datos_electorales_2019.csv')
+# datos_electorales_2021 = df_2021.to_csv('datos_electorales_2021.csv')
 
 
 # ## 2.-Contexto y análisis de los resultados
@@ -903,7 +918,7 @@ df_2021.info()
 # 
 # Vamos a pasar a exponer los resultados absolutos por partidos tomando como referencia los resultados de cada unas de las elecciones.
 
-# In[53]:
+# In[55]:
 
 
 import numpy as np
@@ -915,7 +930,7 @@ from plotly.offline import iplot, init_notebook_mode
 init_notebook_mode()
 
 
-# In[54]:
+# In[56]:
 
 
 import plotly.graph_objects as go
@@ -948,7 +963,7 @@ fig.show()
 
 # Para saber cuál es la variación de los porcentajes de cada partido vamos a calcularlos con respecto al total de votos de cada elección. Para ello extraemos los resultados totales de cada partido en cada elección y creamos una función que nos da la diferencia en votos y porcentajes totales.
 
-# In[55]:
+# In[57]:
 
 
 # Dataset 2019
@@ -961,7 +976,7 @@ cols_votes_2019 = [col for col in cols_2019 if '_porcentaje' not in col]
 cols_votes_2019 = [col for col in cols_votes_2019 if '_share' not in col]
 
 
-# In[56]:
+# In[58]:
 
 
 # Dataset 2021
@@ -974,7 +989,7 @@ cols_votes_2021 = [col for col in cols_2021 if '_porcentaje' not in col]
 cols_votes_2021 = [col for col in cols_votes_2019 if '_share' not in col]
 
 
-# In[57]:
+# In[59]:
 
 
 def total_results(party, df_year):
@@ -987,7 +1002,7 @@ def total_results(party, df_year):
     return [total_votes, total_percentage]
 
 
-# In[58]:
+# In[60]:
 
 
 def difference_elections(party, df_year_1, df_year_2):
@@ -1005,7 +1020,7 @@ def difference_elections(party, df_year_1, df_year_2):
 
 # #### **Partido Popular**
 
-# In[59]:
+# In[61]:
 
 
 print('PP_2019: '+ total_results('pp', df_2019)[0] +' / '+ total_results('pp', df_2019)[1])
@@ -1015,7 +1030,7 @@ print('PP_difference: '+ difference_elections('pp', df_2021, df_2019)[0] +' / '+
 
 # #### **PSOE**
 
-# In[60]:
+# In[62]:
 
 
 print('PSOE_2019: '+ total_results('psoe', df_2019)[0] +' / '+ total_results('psoe', df_2019)[1])
@@ -1025,7 +1040,7 @@ print('PSOE_difference: '+ difference_elections('psoe', df_2021, df_2019)[0] +' 
 
 # #### **Ciudadanos**
 
-# In[61]:
+# In[63]:
 
 
 print('CS_2019: '+ total_results('cs', df_2019)[0] +' / '+ total_results('cs', df_2019)[1])
@@ -1035,7 +1050,7 @@ print('CS_difference: '+ difference_elections('cs', df_2021, df_2019)[0] +' / '+
 
 # #### **Más Madrid**
 
-# In[62]:
+# In[64]:
 
 
 print('MAS_MADRID_2019: '+ total_results('mas_madrid', df_2019)[0] +' / '+ total_results('mas_madrid', df_2019)[1])
@@ -1045,7 +1060,7 @@ print('MAS_MADRID_difference: '+ difference_elections('mas_madrid', df_2021, df_
 
 # #### **PODEMOS-IU**
 
-# In[63]:
+# In[65]:
 
 
 print('PODEMOS_IU_2019: '+ total_results('podemos_iu', df_2019)[0] +' / '+ total_results('podemos_iu', df_2019)[1])
@@ -1055,7 +1070,7 @@ print('PODEMOS_IU_difference: '+ difference_elections('podemos_iu', df_2021, df_
 
 # #### **Vox**
 
-# In[64]:
+# In[66]:
 
 
 print('VOX_2019: '+ total_results('vox', df_2019)[0] +' / '+ total_results('vox', df_2019)[1])
@@ -1077,7 +1092,7 @@ print('VOX_difference: '+ difference_elections('vox', df_2021, df_2019)[0] +' / 
 
 # **PP-PSOE (vs) Más Madrid-Cs-Vox-Podemos-IU** 
 
-# In[65]:
+# In[67]:
 
 
 # 2019:
@@ -1115,7 +1130,7 @@ pp_psoe_per_diff = pp_psoe_percentage_2021 - pp_psoe_percentage_2019
 otros_per_diff = otros_partidos_percentage_2021 - otros_partidos_percentage_2019
 
 
-# In[66]:
+# In[68]:
 
 
 import plotly.graph_objects as go
@@ -1138,7 +1153,7 @@ fig.update_layout(title='PP-PSOE (vs) Más Madrid-Cs-Vox-Podemos-IU', barmode='g
 fig.show()
 
 
-# In[67]:
+# In[69]:
 
 
 # 2019
@@ -1162,7 +1177,7 @@ pp_psoe_per_diff = str(round(pp_psoe_per_diff, 2))+' %'
 otros_per_diff = str(round(otros_per_diff, 2))+' %'
 
 
-# In[68]:
+# In[70]:
 
 
 print('PP_PSOE_2019: '+ pp_psoe_2019 +' / '+ pp_psoe_percentage_2019)
@@ -1170,7 +1185,7 @@ print('PP_PSOE_2021: '+ pp_psoe_2021 +' / '+ pp_psoe_percentage_2021)
 print('PP_PSOE_DIFF: '+ pp_psoe_vote_diff +' / '+ pp_psoe_per_diff)
 
 
-# In[69]:
+# In[71]:
 
 
 print('OTROS_PARTIDOS_2019: '+ otros_partidos_2019 +' / '+ otros_partidos_percentage_2019)
@@ -1186,7 +1201,7 @@ print('OTROS_PARTIDOS_DIFF: '+ otros_partidos_vote_diff +' / '+ otros_per_diff)
 
 # **Derecha(PP-Cs-Vox) (vs) Izquierda(PSOE, Más Madrid, Podemos-IU)** 
 
-# In[70]:
+# In[72]:
 
 
 # Partidos
@@ -1236,7 +1251,7 @@ right_percentage_diff = right_percentage_2021 - right_percentage_2019
 left_percentage_diff = left_percentage_2021 - left_percentage_2019
 
 
-# In[71]:
+# In[73]:
 
 
 import plotly.graph_objects as go
@@ -1259,7 +1274,7 @@ fig.update_layout(title='Derecha (vs) Izquierda', barmode='group')
 fig.show()
 
 
-# In[72]:
+# In[74]:
 
 
 # 2019
@@ -1293,7 +1308,7 @@ right_percentage_diff = str(round(right_percentage_diff, 2))+' %'
 left_percentage_diff = str(round(left_percentage_diff, 2))+' %'
 
 
-# In[73]:
+# In[75]:
 
 
 print('RIGHT_2019: '+ right_votes_2019 +' / '+ right_percentage_2019)
@@ -1301,7 +1316,7 @@ print('RIGHT_2021: '+ right_votes_2021 +' / '+ right_percentage_2021)
 print('RIGHT_DIFF: '+ right_vote_diff +' / '+ right_percentage_diff)
 
 
-# In[74]:
+# In[76]:
 
 
 print('LEFT_2019: '+ left_votes_2019 +' / '+ left_percentage_2019)
@@ -1309,7 +1324,7 @@ print('LEFT_2021: '+ left_votes_2021 +' / '+ left_percentage_2021)
 print('LEFT_DIFF: '+ left_vote_diff +' / '+ left_percentage_diff)
 
 
-# In[75]:
+# In[77]:
 
 
 print('RIGHT_LEFT_DIFF_2019: '+ right_left_vote_diff_2019 +' / '+ right_left_perc_diff_2019)
@@ -1326,7 +1341,7 @@ print('RIGHT_LEFT_DIFF_2021: '+ right_left_vote_diff_2021 +' / '+ right_left_per
 # 
 # Para la construcción de mapas interactivos que permitieran mostrar la distribución del voto en cada municipio se ha utilizado la librería BokehJS y los datos geoespaciales de nuestros dataframes (columna 'geometry').
 
-# In[76]:
+# In[78]:
 
 
 # funcion que te devuelve nº de municipios donde gana un partido (party_1) sobre otro (party_2):
@@ -1339,7 +1354,7 @@ def won_municipalities(party_1, party_2, df):
 
 # **PP (vs) PSOE** 
 
-# In[77]:
+# In[79]:
 
 
 # añado nuevas columnas
@@ -1349,7 +1364,7 @@ df_2019["psoe_share"] = df_2019["psoe"] / df_2019["votos_totales"]
 df_2019["rel_psoe_share"] = df_2019["psoe"] / (df_2019["pp"]+df_2019["psoe"])
 
 
-# In[78]:
+# In[80]:
 
 
 from geopandas import GeoDataFrame
@@ -1380,7 +1395,7 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[79]:
+# In[81]:
 
 
 # añado nuevas columnas
@@ -1390,7 +1405,7 @@ df_2021["psoe_share"] = df_2021["psoe"] / df_2021["votos_totales"]
 df_2021["rel_psoe_share"] = df_2021["psoe"] / (df_2021["pp"]+df_2021["psoe"])
 
 
-# In[80]:
+# In[82]:
 
 
 result = GeoDataFrame(df_2021)
@@ -1409,28 +1424,28 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[81]:
+# In[83]:
 
 
 # municipios ganados por el PP al PSOE en 2019
 won_municipalities('pp', 'psoe', df_2019)
 
 
-# In[82]:
+# In[84]:
 
 
 # municipios ganados por el PSOE al PP en 2019
 won_municipalities('psoe', 'pp', df_2019)
 
 
-# In[83]:
+# In[85]:
 
 
 # municipios ganados por el PP al PSOE en 2021
 won_municipalities('pp', 'psoe', df_2021)
 
 
-# In[84]:
+# In[86]:
 
 
 # municipios ganados por el PSOE al PP en 2021
@@ -1441,7 +1456,7 @@ won_municipalities('psoe', 'pp', df_2021)
 
 # **PP-PSOE (vs) Otros Partidos** 
 
-# In[85]:
+# In[87]:
 
 
 # 2019
@@ -1465,7 +1480,7 @@ df_2021["otros_partidos_share"] = df_2021["otros_partidos"] / df_2021["votos_tot
 df_2021["rel_otros_partidos_share"] = df_2021["otros_partidos"] / (df_2021["pp_psoe"]+df_2021["otros_partidos"])
 
 
-# In[86]:
+# In[88]:
 
 
 result = GeoDataFrame(df_2019)
@@ -1484,7 +1499,7 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[87]:
+# In[89]:
 
 
 result = GeoDataFrame(df_2021)
@@ -1503,28 +1518,28 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[88]:
+# In[90]:
 
 
 # municipios ganados por PP-PSOE al resto de partidos en 2019
 won_municipalities('pp_psoe', 'otros_partidos', df_2019)
 
 
-# In[89]:
+# In[91]:
 
 
 # municipios ganados por el resto de partidos a PP-PSOE en 2019
 won_municipalities('otros_partidos', 'pp_psoe', df_2019)
 
 
-# In[90]:
+# In[92]:
 
 
 # municipios ganados por PP-PSOE al resto de partidos en 2021
 won_municipalities('pp_psoe', 'otros_partidos', df_2021)
 
 
-# In[91]:
+# In[93]:
 
 
 # municipios ganados por el resto de partidos a PP-PSOE en 2021
@@ -1535,7 +1550,7 @@ won_municipalities('otros_partidos', 'pp_psoe', df_2021)
 
 # **Derecha (vs) Izquierda** 
 
-# In[92]:
+# In[94]:
 
 
 # 2019
@@ -1557,7 +1572,7 @@ df_2021["izquierda_share"] = df_2021["izquierda"] / df_2021["votos_totales"]
 df_2021["rel_izquierda_share"] = df_2021["izquierda"] / (df_2021["derecha"]+df_2021["izquierda"])
 
 
-# In[93]:
+# In[95]:
 
 
 result = GeoDataFrame(df_2019)
@@ -1576,7 +1591,7 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[94]:
+# In[96]:
 
 
 result = GeoDataFrame(df_2021)
@@ -1595,28 +1610,28 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[95]:
+# In[97]:
 
 
 # municipios ganados por el eje de la derecha al eje de la izquierda en 2019
 won_municipalities('derecha', 'izquierda', df_2019)
 
 
-# In[96]:
+# In[98]:
 
 
 # municipios ganados por el eje de la izquierda al eje de la derecha en 2019
 won_municipalities('izquierda', 'derecha', df_2019)
 
 
-# In[97]:
+# In[99]:
 
 
 # municipios ganados por el eje de la derecha al eje de la izquierda en 2021
 won_municipalities('derecha', 'izquierda', df_2021)
 
 
-# In[98]:
+# In[100]:
 
 
 # municipios ganados por el eje de la izquierda al eje de la derecha en 2021
@@ -1627,7 +1642,7 @@ won_municipalities('izquierda', 'derecha', df_2021)
 
 # **PP (vs) Más Madrid** 
 
-# In[99]:
+# In[101]:
 
 
 # 2019
@@ -1643,7 +1658,7 @@ df_2021["mas_madrid_share"] = df_2021["mas_madrid"] / df_2021["votos_totales"]
 df_2021["rel_mas_madrid_share"] = df_2021["mas_madrid"] / (df_2021["pp"]+df_2021["mas_madrid"])
 
 
-# In[100]:
+# In[102]:
 
 
 result = GeoDataFrame(df_2019)
@@ -1662,7 +1677,7 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[101]:
+# In[103]:
 
 
 result = GeoDataFrame(df_2021)
@@ -1681,28 +1696,28 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[102]:
+# In[104]:
 
 
 # municipios ganados por el PP a Más Madrid en 2019
 won_municipalities('pp', 'mas_madrid', df_2019)
 
 
-# In[103]:
+# In[105]:
 
 
 # municipios ganados por Más Madrid a el PP en 2019
 won_municipalities('mas_madrid', 'pp', df_2019)
 
 
-# In[104]:
+# In[106]:
 
 
 # municipios ganados por el PP a Más Madrid en 2019
 won_municipalities('pp', 'mas_madrid', df_2021)
 
 
-# In[105]:
+# In[107]:
 
 
 # municipios ganados por Más Madrid a el PP en 2019
@@ -1717,7 +1732,7 @@ won_municipalities('mas_madrid', 'pp', df_2021)
 # 
 # Por último vamos a ver dentro del eje de izquierdas la distribución del voto a la izquierda del PSOE entre Podemos-IU y Más Madrid.
 
-# In[106]:
+# In[108]:
 
 
 # 2019
@@ -1733,7 +1748,7 @@ df_2021["mas_madrid_share"] = df_2021["mas_madrid"] / df_2021["votos_totales"]
 df_2021["rel_mas_madrid_share"] = df_2021["mas_madrid"] / (df_2021["podemos_iu"]+df_2021["mas_madrid"])
 
 
-# In[107]:
+# In[109]:
 
 
 result = GeoDataFrame(df_2019)
@@ -1752,7 +1767,7 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[108]:
+# In[110]:
 
 
 result = GeoDataFrame(df_2021)
@@ -1771,28 +1786,28 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[109]:
+# In[111]:
 
 
 # municipios ganados por Más Madrid a Podemos-IU en 2019
 won_municipalities('mas_madrid', 'podemos_iu', df_2019)
 
 
-# In[110]:
+# In[112]:
 
 
 # municipios ganados por Podemos-IU a Más Madrid en 2019
 won_municipalities('podemos_iu', 'mas_madrid', df_2019)
 
 
-# In[111]:
+# In[113]:
 
 
 # municipios ganados por Más Madrid a Podemos-IU en 2021
 won_municipalities('mas_madrid', 'podemos_iu', df_2021)
 
 
-# In[112]:
+# In[114]:
 
 
 # municipios ganados por Podemos-IU a Más Madrid en 2021
@@ -1809,7 +1824,7 @@ won_municipalities('podemos_iu', 'mas_madrid', df_2021)
 
 # Definimos unas funciones para obtener la abstención electoral en votos y porcentajes entre las dos elecciones:
 
-# In[113]:
+# In[115]:
 
 
 def electoral_abstention(df_year):
@@ -1822,7 +1837,7 @@ def electoral_abstention(df_year):
     return [abstention_total_votes, abstention_total_percentage]
 
 
-# In[114]:
+# In[116]:
 
 
 def dif_electoral_abstention(df_year_1, df_year_2):
@@ -1841,7 +1856,7 @@ def dif_electoral_abstention(df_year_1, df_year_2):
     return [abstencion_total_votes, abstention_total_percentage]
 
 
-# In[115]:
+# In[117]:
 
 
 print('Abstención 2019: '+ electoral_abstention(df_2019)[0] +' / '+ electoral_abstention(df_2019)[1])
@@ -1855,7 +1870,7 @@ print('Diferencia 2021-2019: '+ dif_electoral_abstention(df_2021, df_2019)[0] +'
 
 # Vamos a representar cómo se distribuye la abstención sobre el mapa y analizaremos qué partido sale beneficiado de la reducción/aumento de la abstención en cada municipio:
 
-# In[116]:
+# In[118]:
 
 
 # 2019
@@ -1871,7 +1886,7 @@ df_2021["votos_totales_share"] = df_2021["votos_totales"] / df_2021["votos_total
 df_2021["rel_votos_totales_share"] = df_2021["votos_totales"] / (df_2021["abstencion"]+df_2021["votos_totales"])
 
 
-# In[117]:
+# In[119]:
 
 
 result = GeoDataFrame(df_2019)
@@ -1890,7 +1905,7 @@ p.add_layout(color_bar, 'below')
 show(p)
 
 
-# In[118]:
+# In[120]:
 
 
 result = GeoDataFrame(df_2021)
@@ -1913,7 +1928,7 @@ show(p)
 # 
 # En cambio en 2021 podemos ver cómo la abstención general se reduce en los grandes núcleos de población, mientras se reduce en algunos municipios del norte.
 
-# In[119]:
+# In[121]:
 
 
 import pandas as pd
@@ -1928,20 +1943,20 @@ df_abstenciones['dif_abstencion_votos'] = df_abstenciones['abstencion_2021'] - d
 df_abstenciones['dif_abstencion_porcentaje'] = df_2021['abstencion_porcentaje'] - df_2019['abstencion_porcentaje']
 
 
-# In[120]:
+# In[122]:
 
 
 df_abstenciones.info()
 
 
-# In[121]:
+# In[123]:
 
 
 # donde más crece la abstención en 2021 con respecto a 2019:
 df_abstenciones.nlargest(15, ['dif_abstencion_porcentaje'])
 
 
-# In[122]:
+# In[124]:
 
 
 # donde más se reduce la abstención en 2021 con respecto a 2019:
@@ -1978,15 +1993,3 @@ df_abstenciones.nsmallest(15, ['dif_abstencion_porcentaje'])
 # 
 # 
 # * En cuanto a la participación, las elecciones de 2021 han desmitificado que una participación alta sea sinónimo de un mayor apoyo hacia la izquierda vistos los resultados. Se podría decir que esta mayor movilización se ha debido a los liderazgos principales de Isabel Díaz Ayuso y Pablo Iglesias Turrión, que han movilizado el voto a uno y otro lado.
-
-# In[123]:
-
-
-get_ipython().system('pip list')
-
-
-# In[ ]:
-
-
-
-
